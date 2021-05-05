@@ -1,6 +1,8 @@
 import numpy as np
 import pickle
 
+#States
+
 class State:
     
     def __init__(self, p1, p2):
@@ -17,14 +19,7 @@ class State:
     
     def winner(self):
         #row
-        for i in range(3):class State:
-    
-    def __init__(self, p1, p2):
-        self.board = np.zeros((3,3))
-        self.p1 = p1
-        self.p2 = p2
-        self.isEnd = False
-        self.boardHas
+        for i in range(3):
             if sum(self.board[i, :]) == 3:
                 self.isEnd = True
                 return 1
@@ -55,14 +50,7 @@ class State:
         #tie
         if len(self.availablePositions()) == 0:
             self.isEnd = True
-            return 0class State:
-    
-    def __init__(self, p1, p2):
-        self.board = np.zeros((3,3))
-        self.p1 = p1
-        self.p2 = p2
-        self.isEnd = False
-        self.boardHas
+            return 0
         self.isEnd = False
         return None
     
@@ -183,10 +171,11 @@ class State:
                     token = ' '
                 out += token + ' | '
             print(out)
-        print("--------------------")       
+        print("--------------------")                
 
 
 
+#Player class
 
 class Player:
     
@@ -242,62 +231,29 @@ class Player:
         self.states_value = pickle.load(fr)
         fr.close()
 
+#Human player
 
-
-class Player:
+class HumanPlayer:
     
-    def __init__(self, name, exp_rate = 0.3):
+    def __init__(self, name):
         self.name = name
-        self.states = []
-        self.lr = 0.2
-        self.exp_rate = exp_rate
-        self.decay_gamma = 0.9
-        self.states_value = {}
         
-    def getHash(self, board):
-        boardHash = str(board.reshape(3*3))
-        return boardHash
-    
-    def chooseAction(self, positions, current_board, symbol):
-        if np.random.uniform(0, 1) <= self.exp_rate:
-            #Take random action
-            idx = np.random.choice(len(positions))
-            action = positions[idx]
-        else:
-            value_max = -99999
-            for p in positions:
-                next_board = current_board.copy()
-                next_board[p] = symbol
-                next_boardHash = self.getHash(next_board)
-                value = 0 if self.states_value.get(next_boardHash) is None else self.states_value.get(next_boardHash)
-                if value >= value_max:
-                    value_max = value
-                    action = p
-        return action
-        
-    def addState(self, state):
-        self.states.append(state)
-        
-    def feedReward(self, reward):
-        for st in reversed(self.states):
-            if self.states_value.get(st) is None:
-                self.states_value[st] = 0
-            self.states_value[st] += self.lr * (self.decay_gamma * reward - self.states_value[st])
-            reward = self.states_value[st]
+    def chooseAction(self, positions):
+        while True:
+            row = int(input("Input your action row:"))
+            col = int(input("Input your action col:"))
+            action = (row - 1, col - 1)
+            if action in positions:
+                return action
             
+    def addState(self, state):
+        pass
+    
+    def feedReward(self, reward):
+        pass
+    
     def reset(self):
-        self.states = []
-        
-    def savePolicy(self):
-        fw = open('policy_' + str(self.name), 'wb')
-        pickle.dump(self.states_value, fw)
-        fw.close()
-        
-    def loadPolicy(self, file):
-        fr = open(file, 'rb')
-        self.states_value = pickle.load(fr)
-        fr.close()   
-
+        pass        
 
 
 #Training 
